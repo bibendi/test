@@ -50,5 +50,28 @@ module Vicar
         loader.load_products
       end
     end
+    
+    def predl_cache_key
+      {
+        :section => 'catalogue:predl',
+        :region => current_region.name_lat,
+        :region_by_ip => current_region_by_ip.try(:name_lat),
+        :rubric => rubric.id,
+        :facets => traits_filter_to_json,
+        :search => search?,
+        :favorite => filtered_by_favorites? ? "#{current_user.try(:id)}:#{cookies[UserFavoriteCompany::COOKIES_SID_KEY]}" : nil,
+        :q => search_query,
+        :super_user => super_user?,
+        :signed_in => signed_in?,
+        :listing_sort => listing_sort || 'default',
+        :listing_style => listing_style,
+        :company_id => @company.try(:id),
+        :is_ajax => request.xhr?,
+        :page => params[:page],
+        :showpp => params[:showpp],
+        :mobile_device => mobile_device?
+      }
+    end
+    
   end
 end
